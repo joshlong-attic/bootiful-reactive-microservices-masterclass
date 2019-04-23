@@ -11,6 +11,8 @@
 * Introduction to the Reactive Streams & Reactor 
 ** Cold & Hot Streams 
 ** Schedulers
+** the Reactor Context
+
 
 * Reactive Data Access
 ** Spring Data MongoDB 
