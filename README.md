@@ -1,19 +1,19 @@
 # A Bootiful Reactive Microservices Masterclass 
 
 * Motivations for Microservices (x)
- *  Learning Organizations 
- *  Agility 
+	*  Learning Organizations 
+	*  Agility 
 
 * Spring Boot "Bootcamp" (x)
- *  Starters
- *  Autoconfiguration
+	*  Starters
+	*  Autoconfiguration
 
 * Introduction to the Reactive Streams & Reactor 
- *  Cold & Hot Streams 
- *  Schedulers
- *  the Reactor Context
+	*  Cold & Hot Streams 
+	*  Schedulers
+	*  the Reactor Context
 
-* Reactive Data Access (x)
+<!-- * Reactive Data Access (x)
  *  Spring Data MongoDB 
  *  R2DBC 
 
@@ -46,3 +46,4 @@
 * Cloud Foundry (x)
 -  `cf push`
 -  The Reactive Java Client 
+ -->
