@@ -40,7 +40,7 @@
 ** API Gateway
 ** API Adapters
 
-* RSocket
+* RSocket (x)
 ** Raw RSocket
 ** Spring Message Mapping 
 
