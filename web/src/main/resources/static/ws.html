@@ -1,0 +1,15 @@
+<html>
+<head><title>Websockets </title></head>
+<body>
+<P> See the Webtools Console output
+</P>
+<script>
+    window.addEventListener('load', function (e) {
+        var ws = new WebSocket('ws://localhost:8080/ws/greetings')
+        ws.addEventListener('message', function (msg) {
+            console.log('new data: ' + msg.data);
+        })
+    })
+</script>
+</body>
+</html>
