@@ -4,7 +4,7 @@
 ** Learning Organizations 
 ** Agility 
 
-* Spring Boot "Bootcamp" (X)
+* Spring Boot "Bootcamp" (x)
 ** Starters
 ** Autoconfiguration
 
@@ -14,11 +14,11 @@
 ** the Reactor Context
 
 
-* Reactive Data Access
+* Reactive Data Access (x)
 ** Spring Data MongoDB 
 ** R2DBC 
 
-* The Web Tier 
+* The Web Tier (x)
 ** Spring Webflux-powered HTTP APIs 
 ** Websockets
 ** the `WebClient` Reactive HTTP Client 
