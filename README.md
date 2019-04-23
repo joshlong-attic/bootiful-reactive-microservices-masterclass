@@ -1,27 +1,27 @@
 # A Bootiful Reactive Microservices Masterclass 
 
 * Motivations for Microservices (x)
--  Learning Organizations 
--  Agility 
+ *  Learning Organizations 
+ *  Agility 
 
 * Spring Boot "Bootcamp" (x)
--  Starters
--  Autoconfiguration
+ *  Starters
+ *  Autoconfiguration
 
 * Introduction to the Reactive Streams & Reactor 
--  Cold & Hot Streams 
--  Schedulers
--  the Reactor Context
+ *  Cold & Hot Streams 
+ *  Schedulers
+ *  the Reactor Context
 
 * Reactive Data Access (x)
--  Spring Data MongoDB 
--  R2DBC 
+ *  Spring Data MongoDB 
+ *  R2DBC 
 
 * The Web Tier (x)
-- Spring Webflux-powered HTTP APIs 
-- Websockets
--  the `WebClient` Reactive HTTP Client 
--  Actuator 
+ * Spring Webflux-powered HTTP APIs 
+ * Websockets
+ * the `WebClient` Reactive HTTP Client 
+ * Actuator 
 
 * Testing (x)
 -  Testing Reactive Pipelines 
