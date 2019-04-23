@@ -29,7 +29,7 @@
 	*  Testing Web Endpoints 
 	*  Testing Microservices 
 
-* Reliability Patterns 
+* Reliability Patterns (x)
 	*  The new Spring Cloud Circuit Breaker 
 	*  `onErrorResume(...)` 
 	*  `retry(...)` 
