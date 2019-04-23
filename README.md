@@ -43,6 +43,6 @@
 -  Raw RSocket
 -  Spring Message Mapping 
 
-* Cloud Foundry 
+* Cloud Foundry (x)
 -  `cf push`
 -  The Reactive Java Client 
