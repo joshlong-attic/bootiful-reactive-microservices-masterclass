@@ -4,7 +4,7 @@
 ** Learning Organizations 
 ** Agility 
 
-* Spring Boot "Bootcamp"
+* Spring Boot "Bootcamp" (X)
 ** Starters
 ** Autoconfiguration
 
