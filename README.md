@@ -22,6 +22,12 @@
 ** the `WebClient` Reactive HTTP Client 
 ** Actuator 
 
+* Testing 
+** Testing Reactive Pipelines 
+** Testing Data Access 
+** Testing Web Endpoints 
+** Testing Microservices 
+
 * Reliability Patterns 
 ** The new Spring Cloud Circuit Breaker 
 ** `onErrorResume(...)` 
