@@ -8,7 +8,7 @@
 	*  Starters
 	*  Autoconfiguration
 
-* Introduction to the Reactive Streams & Reactor 
+* Introduction to the Reactive Streams & Reactor (x)
 	*  Cold & Hot Streams 
 	*  Schedulers
 	*  the Reactor Context
