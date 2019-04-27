@@ -35,7 +35,7 @@
 	*  `retry(...)` 
 	*  `on*`
 
-* Edge Services 
+* Edge Services (x)
 	*  API Gateway
 	*  API Adapters
 
