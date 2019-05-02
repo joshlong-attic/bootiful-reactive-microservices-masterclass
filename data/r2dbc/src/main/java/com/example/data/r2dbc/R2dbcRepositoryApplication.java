@@ -77,14 +77,14 @@ class Initializer {
 	@EventListener(ApplicationReadyEvent.class)
 	public void go() {
 
-		Flux<Customer> customers = Flux
+		Flux<Reservation> res  = Flux
 			.just("A", "B", "C", "C")
 			.map(name -> new Reservation(null, name))
 			.flatMap(this.repository::save);
 
 		repository
 			.deleteAll()
-			.thenMany(customers)
+			.thenMany(res)
 			.thenMany(this.repository.findByName("C"))
 			.subscribe(log::info);
 	}
