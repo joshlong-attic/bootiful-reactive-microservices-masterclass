@@ -20,6 +20,7 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.reactive.handler.SimpleUrlHandlerMapping;
 import org.springframework.web.reactive.socket.WebSocketHandler;
+import org.springframework.web.reactive.socket.WebSocketMessage;
 import org.springframework.web.reactive.socket.server.support.WebSocketHandlerAdapter;
 import reactor.core.publisher.Flux;
 
@@ -41,7 +42,7 @@ public class WebApplication {
 
 	@Bean
 	RouterFunction<ServerResponse> routes(GreetingsService greetingsService) {
-		var prefix = "/fn";
+		String prefix = "/fn";
 		return route()
 			.GET(prefix + Mappings.GREET, r -> ok().body(greetingsService.greet(r.pathVariable("name")), Greeting.class))
 			.GET(prefix + Mappings.GREET_OVER_TIME, r -> ok()
@@ -78,10 +79,10 @@ class WebsocketConfig {
 	@Bean
 	WebSocketHandler webSocketHandler(GreetingsService greetingsService) {
 		return webSocketSession -> {
-			var textMessages = Flux
+			Flux<WebSocketMessage> world = Flux
 				.from(greetingsService.greetOverTime("World"))
 				.map(g -> webSocketSession.textMessage(from(g)));
-			return webSocketSession.send(textMessages);
+			return webSocketSession.send(world);
 		};
 	}
 
