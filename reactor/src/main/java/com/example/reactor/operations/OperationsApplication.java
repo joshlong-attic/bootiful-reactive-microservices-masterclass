@@ -20,8 +20,8 @@ public class OperationsApplication {
 	@EventListener(ApplicationReadyEvent.class)
 	public void go() throws InterruptedException {
 
-		var f1 = Flux.just("A", "B", "C", "D");
-		var f2 = Flux.just("E", "F");
+		Flux <String> f1 = Flux.just("A", "B", "C", "D");
+		Flux <String> f2 = Flux.just("E", "F");
 
 		log.info("--------------------------------------");
 		Flux
@@ -43,7 +43,7 @@ public class OperationsApplication {
 		log.info("time: " + Instant.now());
 		Flux<String> defer = Flux
 			.defer(() -> {
-				var when = Instant.now();
+				Instant when = Instant.now();
 				return f1.map(s -> s + " @ " + when);
 			});
 

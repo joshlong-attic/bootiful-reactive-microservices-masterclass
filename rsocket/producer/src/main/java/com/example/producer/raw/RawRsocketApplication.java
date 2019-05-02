@@ -34,7 +34,7 @@ public class RawRsocketApplication {
 	@EventListener(ApplicationReadyEvent.class)
 	public void go() throws Exception {
 
-		var greetingService = this.greetingService();
+		GreetingService greetingService = this.greetingService();
 
 		RSocketFactory
 			.receive()

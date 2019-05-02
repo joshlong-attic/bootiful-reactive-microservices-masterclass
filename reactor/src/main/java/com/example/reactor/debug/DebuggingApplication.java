@@ -20,7 +20,7 @@ public class DebuggingApplication {
 
 		Schedulers.enableMetrics();
 
-		var pipeline = Flux.just("A", "B", "C", "D", "E");
+		Flux <String> pipeline = Flux.just("A", "B", "C", "D", "E");
 		pipeline
 			.metrics()
 			.log()

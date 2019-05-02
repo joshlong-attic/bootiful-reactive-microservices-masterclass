@@ -26,7 +26,7 @@ import reactor.core.publisher.Flux;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Map;
+import java.util.Collections;
 import java.util.stream.Stream;
 
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
@@ -95,7 +95,7 @@ class WebsocketConfig {
 	SimpleUrlHandlerMapping simpleUrlHandlerMapping(WebSocketHandler wsh) {
 		return new SimpleUrlHandlerMapping() {
 			{
-				setUrlMap(Map.of("/ws/greetings", wsh));
+				setUrlMap(Collections.singletonMap("/ws/greetings", wsh));
 				setOrder(10);
 			}
 		};

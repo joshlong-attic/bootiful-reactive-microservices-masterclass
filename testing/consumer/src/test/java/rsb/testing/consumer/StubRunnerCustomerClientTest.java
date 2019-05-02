@@ -37,7 +37,7 @@ public class StubRunnerCustomerClientTest {
 	@Test
 	public void getAllCustomers() {
 
-		var base = "localhost:" + this.portOfProducerService;
+		String base = "localhost:" + this.portOfProducerService;
 		this.client.setBase(base);
 		log.info("setBase( " + base + ')');
 

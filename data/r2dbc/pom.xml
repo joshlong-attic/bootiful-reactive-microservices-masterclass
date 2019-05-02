@@ -17,7 +17,7 @@
 
     <properties>
         <start-class>com.example.data.r2dbc.R2dbcRepositoryApplication</start-class>
-        <java.version>11</java.version>
+        <java.version>1.8</java.version>
     </properties>
 
     <dependencies>
