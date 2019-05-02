@@ -15,7 +15,9 @@
     <name>reactor</name>
     <description>Demo project for Spring Boot</description>
 
-    <properties>
+    <properties><start-class>
+        com.example.reactor.bridge.ReactorApplication
+    </start-class>
         <java.version>11</java.version>
     </properties>
 
