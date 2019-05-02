@@ -36,7 +36,7 @@ class Initializer {
 	@EventListener(ApplicationReadyEvent.class)
 	public void go() {
 
-		var customers = Flux
+		Flux<Customer> customers = Flux
 			.just("A", "B", "C", "C")
 			.map(name -> new Customer(null, name))
 			.flatMap(this.repository::save);
