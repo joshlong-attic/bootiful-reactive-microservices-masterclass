@@ -1,6 +1,7 @@
 # A Bootiful Reactive Microservices Masterclass 
 
-Useful to get everything built: `find . -iname pom.xml | xargs -I pom mvn -f pom install`
+Useful to get everything built: `find . -iname pom.xml | xargs -I pom mvn -DskipTests=true -f pom install`
+
 
 * Motivations for Microservices (x)
 	*  Learning Organizations 

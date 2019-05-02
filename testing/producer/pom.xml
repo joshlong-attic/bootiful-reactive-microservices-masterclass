@@ -13,7 +13,7 @@
     </parent>
 
     <properties>   
-        <java.version>11</java.version>
+        <java.version>1.8</java.version>
         <spring-cloud.version>Greenwich.BUILD-SNAPSHOT</spring-cloud.version>
         <spring-cloud-contract-maven-plugin.version>2.2.0.BUILD-SNAPSHOT</spring-cloud-contract-maven-plugin.version>
         <spring-web-test-client.version>3.2.0</spring-web-test-client.version>

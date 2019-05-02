@@ -1,5 +1,6 @@
 package com.example.client;
 
+import java.util.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,6 +10,7 @@ import org.reactivestreams.Publisher;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.circuitbreaker.commons.ReactiveCircuitBreakerFactory;
+import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
@@ -60,7 +62,7 @@ class ClientRestController {
 
 	@GetMapping("/greet-circuit")
 	Publisher<GreetingsResponse> greetWithCircuitBreaker(@RequestParam Optional<String> name) {
-		var reply = this.errorProneClient.greet(name);
+		Flux<GreetingsResponse>  reply = this.errorProneClient.greet(name);
 		return this.circuitBreakerFactory
 			.create("greet")
 			.run(reply, throwable -> Flux.error(new SimpleException(throwable)));
@@ -108,9 +110,9 @@ class ErrorProneClient {
 	}
 
 	Flux<GreetingsResponse> slowGreet(Optional<String> name) {
-		var discoveryClientInstances = this.discoveryClient.getInstances("service");
-		var serviceInstancesRange = discoveryClientInstances.subList(0, 3);
-		var listOfPublishers = serviceInstancesRange
+		List<ServiceInstance> discoveryClientInstances = this.discoveryClient.getInstances("service");
+		List<ServiceInstance> serviceInstancesRange = discoveryClientInstances.subList(0, 3);
+		List<Flux<GreetingsResponse>> listOfPublishers = serviceInstancesRange
 			.stream()
 			.map(serviceInstance -> doSlowGreeting(serviceInstance.getHost(), serviceInstance.getPort(), name.get()))
 			.collect(Collectors.toList());
@@ -127,7 +129,7 @@ class ErrorProneClient {
 	}
 
 	private Flux<GreetingsResponse> doGreet(String host, int port, Optional<String> name) {
-		var url = name.map(x -> "?name=" + x).orElse("");
+		String url = name.map(x -> "?name=" + x).orElse("");
 		return this
 			.webClient
 			.get()

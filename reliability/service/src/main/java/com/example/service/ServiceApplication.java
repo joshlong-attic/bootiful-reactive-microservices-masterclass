@@ -31,8 +31,8 @@ class ErrorProneRestController {
 
 	@GetMapping("/slow-greet")
 	Flux<GreetingsResponse> greetingsResponseFlux(@RequestParam String name) {
-		var count = (long) (Math.random() * 30);
-		var message = "hello " + name + " (after " + count + " seconds)!";
+		long count = (long) (Math.random() * 30);
+		String message = "hello " + name + " (after " + count + " seconds)!";
 		log.info("returning: " + message);
 		return Flux
 			.just(new GreetingsResponse(message))
