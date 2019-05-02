@@ -49,3 +49,11 @@ Useful to get everything built: `find . -iname pom.xml | xargs -I pom mvn -Dskip
 * Cloud Foundry (x)
 	*  `cf push`
 	*  The Reactive Java Client 
+	
+In order to use MongoDB you'll need a program like this: 
+```
+data=$HOME/Desktop/mongodb-data
+mkdir -p $data
+mongod --replSet my-replica-set --dbpath $data & 
+mongo --eval "rs.initiate()"
+```
