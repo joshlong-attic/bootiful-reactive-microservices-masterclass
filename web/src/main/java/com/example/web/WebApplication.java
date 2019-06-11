@@ -1,11 +1,7 @@
 package com.example.web;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.SneakyThrows;
-import lombok.extern.log4j.Log4j2;
-import org.reactivestreams.Publisher;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -14,25 +10,23 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.reactive.function.server.RouterFunction;
-import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.web.reactive.function.server.*;
 import org.springframework.web.reactive.handler.SimpleUrlHandlerMapping;
 import org.springframework.web.reactive.socket.WebSocketHandler;
 import org.springframework.web.reactive.socket.WebSocketMessage;
+import org.springframework.web.reactive.socket.WebSocketSession;
 import org.springframework.web.reactive.socket.server.support.WebSocketHandlerAdapter;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Collections;
+import java.util.Map;
 import java.util.stream.Stream;
 
-import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
-@Log4j2
 @SpringBootApplication
 public class WebApplication {
 
@@ -41,48 +35,61 @@ public class WebApplication {
 	}
 
 	@Bean
-	RouterFunction<ServerResponse> routes(GreetingsService greetingsService) {
-		String prefix = "/fn";
-		return route()
-			.GET(prefix + Mappings.GREET, r -> ok().body(greetingsService.greet(r.pathVariable("name")), Greeting.class))
-			.GET(prefix + Mappings.GREET_OVER_TIME, r -> ok()
-				.contentType(MediaType.TEXT_EVENT_STREAM)
-				.body(greetingsService.greetOverTime(r.pathVariable("name")), Greeting.class)
-			)
-			.filter((serverRequest, handlerFunction) -> {
-				log.info("start...");
-				try {
-					return handlerFunction.handle(serverRequest);
-				}
-				finally {
-					log.info("stop...");
-				}
-			})
-			.build();
+	RouterFunction<ServerResponse> routes() {
+		return RouterFunctions
+			.route(RequestPredicates.GET("/greetings/{name}").and(request -> Math.random() > .5), this::handleGetGreetings);
+	}
+
+
+	private Mono<ServerResponse> handleGetGreetings(ServerRequest request) {
+		return ok().syncBody(new Greeting(request.pathVariable("name")));
 	}
 }
+
+
+@RestController
+@RequiredArgsConstructor
+class GreetingsSseRestController {
+
+	private final GreetingsService greetingsService;
+
+	@GetMapping(value = "/greetings/sse/{name}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+	Flux<Greeting> greetingFlux(@PathVariable String name) {
+		return this.greetingsService.greet(name);
+	}
+}
+
 
 @Configuration
 class WebsocketConfig {
 
-	private final ObjectMapper om;
+	@Bean
+	WebSocketHandler webSocketHandler(GreetingsService gs) {
+		return new WebSocketHandler() {
 
-	WebsocketConfig(ObjectMapper om) {
-		this.om = om;
+			@Override
+			public Mono<Void> handle(WebSocketSession session) {
+
+				var map = session
+					.receive()
+					.map(WebSocketMessage::getPayloadAsText)
+					.flatMap(gs::greet)
+					.map(Greeting::getMessage)
+					.map(session::textMessage);
+
+				return session.send(map);
+			}
+		};
 	}
 
-	@SneakyThrows
-	String from(Object o) {
-		return om.writeValueAsString(o);
-	}
 
 	@Bean
-	WebSocketHandler webSocketHandler(GreetingsService greetingsService) {
-		return webSocketSession -> {
-			Flux<WebSocketMessage> world = Flux
-				.from(greetingsService.greetOverTime("World"))
-				.map(g -> webSocketSession.textMessage(from(g)));
-			return webSocketSession.send(world);
+	SimpleUrlHandlerMapping simpleUrlHandlerMapping(WebSocketHandler wsh) {
+		return new SimpleUrlHandlerMapping() {
+			{
+				setUrlMap(Map.of("/ws/greetings", wsh));
+				setOrder(10);
+			}
 		};
 	}
 
@@ -90,61 +97,39 @@ class WebsocketConfig {
 	WebSocketHandlerAdapter webSocketHandlerAdapter() {
 		return new WebSocketHandlerAdapter();
 	}
-
-	@Bean
-	SimpleUrlHandlerMapping simpleUrlHandlerMapping(WebSocketHandler wsh) {
-		return new SimpleUrlHandlerMapping() {
-			{
-				setUrlMap(Collections.singletonMap("/ws/greetings", wsh));
-				setOrder(10);
-			}
-		};
-	}
 }
 
-
-interface Mappings {
-	String GREET = "/greet/{name}";
-	String GREET_OVER_TIME = "/greet-timed/{name}";
-}
 
 @Service
 class GreetingsService {
 
-	Publisher<Greeting> greet(String name) {
-		return Flux.just(new Greeting("hello " + name + "!"));
-	}
-
-	Publisher<Greeting> greetOverTime(String name) {
+	Flux<Greeting> greet(String name) {
 		return Flux
-			.fromStream(Stream.generate(() -> new Greeting("Hello " + name + " @ " + Instant.now())))
-			.delayElements(Duration.ofSeconds(1));
+			.fromStream(Stream.generate(() -> new Greeting("Hello " + name + " @ " + Instant.now()))).delayElements(Duration.ofSeconds(1));
 	}
 }
 
-@RequestMapping("/rc")
+/*
 @RestController
 class GreetingsRestController {
 
-	private final GreetingsService greetingsService;
-
-	GreetingsRestController(GreetingsService greetingsService) {
-		this.greetingsService = greetingsService;
-	}
-
-	@GetMapping(value = Mappings.GREET_OVER_TIME, produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-	Publisher<Greeting> greetOverTime(@PathVariable String name) {
-		return this.greetingsService.greetOverTime(name);
-	}
-
-	@GetMapping(Mappings.GREET)
-	Publisher<Greeting> greet(@PathVariable String name) {
-		return this.greetingsService.greet(name);
+	@GetMapping("/greeting/{name}")
+	Mono<Greeting> greeting(@PathVariable String name) {
+		// ...
+		return Mono.just(new Greeting("Hello " + name + "@" + Instant.now() + "!"));
+		// ...
 	}
 }
+*/
 
 @Data
-@AllArgsConstructor
 class Greeting {
+
+	Greeting(String name) {
+		this.message = "hello " + name + " @ " + Instant.now().toString();
+	}
+
 	private String message;
 }
+
+
