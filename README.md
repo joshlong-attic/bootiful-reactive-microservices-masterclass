@@ -15,6 +15,7 @@ Useful to get everything built: `find . -iname pom.xml | xargs -I pom mvn -Dskip
 	*  Cold & Hot Streams 
 	*  Schedulers
 	*  the Reactor Context
+	*  Adapting non-reactive event sources to reactive APIs with a reactive adapter
 
 * Reactive Data Access (x)
 	*  Spring Data MongoDB 
