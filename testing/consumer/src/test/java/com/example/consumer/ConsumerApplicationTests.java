@@ -2,16 +2,19 @@ package com.example.consumer;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.stubrunner.spring.AutoConfigureStubRunner;
 import org.springframework.cloud.contract.stubrunner.spring.StubRunnerProperties;
+import org.springframework.test.context.junit4.SpringRunner;
 import reactor.test.StepVerifier;
 
+@RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureStubRunner(
 	ids = "com.example:producer:+:8080",
-	stubsMode = StubRunnerProperties.StubsMode.REMOTE
+	stubsMode = StubRunnerProperties.StubsMode.LOCAL
 )
 //@AutoConfigureWireMock(port = 8080)
 public class ConsumerApplicationTests {
