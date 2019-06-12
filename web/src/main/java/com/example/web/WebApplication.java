@@ -2,6 +2,7 @@ package com.example.web;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -15,15 +16,12 @@ import org.springframework.web.reactive.function.server.*;
 import org.springframework.web.reactive.handler.SimpleUrlHandlerMapping;
 import org.springframework.web.reactive.socket.WebSocketHandler;
 import org.springframework.web.reactive.socket.WebSocketMessage;
-import org.springframework.web.reactive.socket.WebSocketSession;
 import org.springframework.web.reactive.socket.server.support.WebSocketHandlerAdapter;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
-import java.util.stream.Stream;
 
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
@@ -60,25 +58,24 @@ class GreetingsSseRestController {
 }
 
 
+@Log4j2
 @Configuration
 class WebsocketConfig {
 
 	@Bean
 	WebSocketHandler webSocketHandler(GreetingsService gs) {
-		return new WebSocketHandler() {
+		return session -> {
 
-			@Override
-			public Mono<Void> handle(WebSocketSession session) {
+			var map = session
+				.receive()
+				.map(WebSocketMessage::getPayloadAsText)
+				.flatMap(gs::greet)
+				.map(Greeting::getMessage)
+				.map(session::textMessage)
+				.doOnEach(signal -> log.info("onEach: " + signal.getType()))
+				.doFinally(signal -> log.info("finally: " + signal.toString()));
 
-				var map = session
-					.receive()
-					.map(WebSocketMessage::getPayloadAsText)
-					.flatMap(gs::greet)
-					.map(Greeting::getMessage)
-					.map(session::textMessage);
-
-				return session.send(map);
-			}
+			return session.send(map);
 		};
 	}
 
@@ -99,13 +96,28 @@ class WebsocketConfig {
 	}
 }
 
-
 @Service
 class GreetingsService {
 
 	Flux<Greeting> greet(String name) {
-		return Flux
-			.fromStream(Stream.generate(() -> new Greeting("Hello " + name + " @ " + Instant.now()))).delayElements(Duration.ofSeconds(1));
+
+		return Mono
+			.just("Josh")
+			.flatMapMany(str -> {
+				if (str.equalsIgnoreCase("josh")) {
+					return Flux.just(new Greeting("Yo Josh"));
+				}
+				else {
+					return Flux.just(new Greeting("Yo"));
+				}
+			});
+
+//
+//		if (name.equalsIgnoreCase("josh"))
+//			return Flux.just(new Greeting("Yo Josh"));
+//
+//		else return Flux.just(new Greeting("Yo"));
+//		return  Flux .fromStream(Stream.generate(() -> new Greeting("Hello " + name + " @ " + Instant.now()))).delayElements(Duration.ofSeconds(1));
 	}
 }
 
@@ -125,11 +137,11 @@ class GreetingsRestController {
 @Data
 class Greeting {
 
+	private String message;
+
 	Greeting(String name) {
 		this.message = "hello " + name + " @ " + Instant.now().toString();
 	}
-
-	private String message;
 }
 
 
