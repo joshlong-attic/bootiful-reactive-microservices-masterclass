@@ -1,6 +1,7 @@
 package com.example.consumer;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.stubrunner.spring.AutoConfigureStubRunner;
@@ -18,12 +19,11 @@ public class ConsumerApplicationTests {
 	@Autowired
 	private ReservationClient client;
 
+	@Before
+	public void before() {
 //	private String buildJsonFor(String id, String name) {
 //		return " {\"reservationName\":\"" + name + "\",\"id\":\"" + id + "\"}";
 //	}
-
-	@Test
-	public void contextLoads() {
 //
 //		var json = "[" + buildJsonFor("1", "Jane") + "," + buildJsonFor("2", "John") + "]";
 //		stubFor(get(
@@ -33,6 +33,11 @@ public class ConsumerApplicationTests {
 //				.withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 //				.withStatus(HttpStatus.OK.value())
 //			));
+
+	}
+
+	@Test
+	public void contextLoads() {
 
 		var allReservations = this.client.getAllReservations();
 		StepVerifier
