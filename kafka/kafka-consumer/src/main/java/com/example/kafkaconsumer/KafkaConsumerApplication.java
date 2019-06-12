@@ -9,15 +9,18 @@ import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.cloud.stream.messaging.Sink;
 import reactor.core.publisher.Flux;
 
+import java.util.Map;
+
+@Log4j2
 @EnableBinding(Sink.class)
 @SpringBootApplication
-@Log4j2
 public class KafkaConsumerApplication {
 
+
+
 	@StreamListener
-	public void consumeNewGreetings(@Input(Sink.INPUT) Flux<String> greetings) {
-		log.info("starting up!");
-		greetings.subscribe(log::info);
+	public void processNewMessages(@Input(Sink.INPUT) Flux<Map<String, String>> greetings) {
+		greetings.subscribe(greeting -> log.info("new message: " + greeting));
 	}
 
 	public static void main(String[] args) {

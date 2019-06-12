@@ -1,6 +1,5 @@
 package com.example.kafkaproducer;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.stream.annotation.EnableBinding;
@@ -8,30 +7,37 @@ import org.springframework.cloud.stream.messaging.Source;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.support.MessageBuilder;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
-import java.time.Instant;
+import java.util.Collections;
+import java.util.Map;
 
-
-@EnableBinding(Source.class)
 @SpringBootApplication
-@RequiredArgsConstructor
-@RestController
+@EnableBinding(Source.class)
 public class KafkaProducerApplication {
-
-	private final Source source;
-
-	@GetMapping("/greet/{name}")
-	public void produce(@PathVariable String name) {
-		MessageChannel output = this.source.output();
-		Message<String> build = MessageBuilder.withPayload("Hello " + name + " @ " + Instant.now())
-			.build();
-		output.send(build);
-	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(KafkaProducerApplication.class, args);
 	}
 }
+
+@RestController
+class ProducerRestController {
+
+	private final MessageChannel channel;
+
+	ProducerRestController(Source producerBinding) {
+		this.channel = producerBinding.output();
+	}
+
+	@PostMapping("/publish/{name}")
+	Mono<Boolean> publish(@PathVariable String name) {
+		var greetingMsg = MessageBuilder.withPayload(Collections.singletonMap("greeting", "Hello " + name + "!")).build();
+		boolean send = this.channel.send(greetingMsg);
+		return Mono.just(send);
+	}
+}
+
