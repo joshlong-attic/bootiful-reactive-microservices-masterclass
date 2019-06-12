@@ -22,11 +22,13 @@ public class ConsumerApplicationTests {
 	@Autowired
 	private ReservationClient client;
 
-	@Before
-	public void before() {
 //	private String buildJsonFor(String id, String name) {
 //		return " {\"reservationName\":\"" + name + "\",\"id\":\"" + id + "\"}";
 //	}
+
+	@Before
+	public void before() {
+
 //
 //		var json = "[" + buildJsonFor("1", "Jane") + "," + buildJsonFor("2", "John") + "]";
 //		stubFor(get(
