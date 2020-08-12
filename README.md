@@ -57,6 +57,12 @@ Useful to get everything built: `find . -iname pom.xml | xargs -I pom mvn -Dskip
 	* Spring Integration RSocket
 	* Bidirectional communication 
 	* Spring Security 
+	* Spring Retrosocket? 
+
+* Observability  
+	* Spring Cloud Sleuth 
+	* Micrometer
+	* Wavefront	
 
 * Kotlin
 	* Ecosystem
@@ -64,9 +70,11 @@ Useful to get everything built: `find . -iname pom.xml | xargs -I pom mvn -Dskip
 	* Advanced
 
 * The Cloud
-	* Azure Spring Cloud
 	*  `cf push` and Cloud Foundry's the Reactive Java Client 
 	* Docker images in Spring Boot: `mvn spring-boot:build-image`
+	* Azure Spring Cloud	
+
+
 	
 In order to use MongoDB you'll need a program like this: 
 ```
